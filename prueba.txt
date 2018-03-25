@@ -1,144 +1,22 @@
-import java.util.*;
+#include <iostream>
+#include <conio.h>
 
-public class pila 
+Using namespace std;
+int main ()
 {
-	public static void main(String[] args) 
-	{
-		int valor, op=0;
-		pila1 pila = new pila1();
-		Scanner  Entrada = new Scanner(System.in);
-		while(op!=5)
+	INTx=0;
+	floAT a;
+	int op=0, numero;
+	whiLe(op!=5){
+		bandera=TrUE;
+		WHILE(bandera)
 		{
-			System.out.println("Elija una opcion.");
-			System.out.println("1.-Apilar.");
-			System.out.println("2.-Desapilar.");
-			System.out.println("3.-Mostrar cima.");
-			System.out.println("4.-Mostrar tamaño de pila.");
-			op= Entrada.nextInt();
-			switch(op)
-			{
-				case 1:
-					System.out.println("Ingrese número.");
-					valor = Entrada.nextInt();
-					pila.Apilar(valor);
-					System.out.println("valor introducido correctamente");
-					break;
-				case 2:
-					pila.Desapilar();
-					break;
-				case 3:
-					System.out.println(pila.Cima());
-					break;
-				case 4:
-					System.out.println("El tamaño de la pila es: "+ pila.tamanio());
-					break;
-				default:
-					System.out.println("Opcio no válida");
-					break;
-			}
+			bandera=false;
+			cout<<"Hola";
 		}
+		DO{
+			bandera=true;
+		}while(!bandera);
 	}
-
-}
-
-class nodo
-{
-	private int valor;
-	private nodo siguiente;
-	
-	public nodo()
-	{
-		valor=0;
-		siguiente = null;
-	}
-	
-	public void setValor(int n)
-	{
-		valor=n;
-	}
-	
-	public int getValor()
-	{
-		return valor;
-	}
-	
-	public void setSiguiente(nodo n)
-	{
-		siguiente = n;
-	}
-	
-	public nodo getSiguiente()
-	{
-		return siguiente;
-	}
-}
-
-class pila1
-{
-	private nodo n;
-	private int cont;
-	public void Apilar(int valor)
-	{
-		nodo aux;
-		if(n == null)
-		{
-			cont=1;
-			n = new nodo();
-			n.setValor(valor);
-			n.setSiguiente(null);
-		}
-		else
-		{
-			cont++;
-			aux = new nodo();
-			aux.setValor(valor);
-			aux.setSiguiente(n);
-			n=aux;
-		}
-	}
-	
-	public void Desapilar()
-	{
-		nodo aux;
-		if(n == null)
-			System.out.println("Pila vacía");
-		else
-		{
-			if(n.getSiguiente()==null)
-			{
-				n =null;	
-				cont=0;
-			}
-			else
-			{
-				cont--;
-				aux = n;
-				n = n.getSiguiente();
-				aux = null;
-			}
-			System.out.println("Borrado correctamente");
-		}
-	}
-	
-	public String Cima()
-	{
-		if(Vacio())
-			return "El numero de la cima es: "+ n.getValor();
-		else 
-			return "La pila esta vacia.";
-
-	}
-	
-	public boolean Vacio()
-	{
-		if(n != null)
-			return true;
-		else
-			return false;
-	}
-	
-	public int tamanio()
-	{
-			return cont;
-	}
+	return 0;
 }
