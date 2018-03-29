@@ -245,6 +245,7 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 					end
 				elsif cad.count("=")==1
 					if CapturarErrorOp(cad,"=",palabraReservada,index)
+						operadorescont[4]+=cad.count("%")
 						operadorescont[5]+=1
 					else
 						bandera=false
@@ -293,7 +294,6 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 				operadorescont[1]+=cad.count("-")
 				operadorescont[2]+=cad.count("*")
 				operadorescont[3]+=cad.count("/")
-				operadorescont[4]+=cad.count("%")
 				if cad.end_with?';'								#si la cadena termina con ";" los tomara todos
 					signoscont[5]+=1
 				end
@@ -342,6 +342,7 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 						bandera=false
 					end
 				elsif cad.count("=")==1
+					operadorescont[4]+=cad.count("%")
 					if CapturarErrorOp(cad,"=",palabraReservada,index)
 						operadorescont[5]+=1
 					else
@@ -369,23 +370,18 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 				end
 				if cad.end_with?('{') && cad.length>1
 					cad=cad[0,cad.length-1]
-				elsif cad[0]=="{" && cad.length>1
+				elsif cad[0]==("{") && cad.length>1
 					cad=cad[1,cad.length]
 				end
 				if cad.eql?"do"
 					palabraReservadacont[7]+=1
 				end
 				contarTokens(cad,palabraReservada,palabraReservadacont)
-				signoscont[0]+=cad.count("(")	#lo mismo cuento cuantos signos hay en esta linea
-				signoscont[1]+=cad.count(")")
-				signoscont[2]+=cad.count("{")
-				signoscont[3]+=cad.count("}")
-				signoscont[4]+=cad.count("\"")
 				operadorescont[0]+=cad.count("+")
 				operadorescont[1]+=cad.count("-")
 				operadorescont[2]+=cad.count("*")
 				operadorescont[3]+=cad.count("/")
-				operadorescont[4]+=cad.count("%")
+				
 				if cad.end_with?';'
 					signoscont[5]+=1
 				end
