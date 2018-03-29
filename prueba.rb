@@ -99,9 +99,9 @@ def CapturarErroresPR(cad, palabraReservada,index)	#recibe como parametro una ca
 				else
 					
 					if (cadena1==cad) && !(cad.eql?"false")
-						cadena1=cadena1.squeeze
-						cadena1.casecmp?("bol") ? cadena1="bool" : 0
-						palabraReservada.each_with_index  {|array,ind| cadena1.eql?(array) ? i=ind : 0}
+						# cadena1=cadena1.squeeze
+						# cadena1.casecmp?("bol") ? cadena1="bool" : 0
+						# palabraReservada.each_with_index  {|array,ind| cadena1.eql?(array) ? i=ind : 0}
 						if cadena1.casecmp?(palabraReservada[i]) && !bandera[2]
 							cadena1=cadena1.downcase
 							bandera[2]=true
@@ -171,6 +171,7 @@ end
 
 def contarTokens(cad,palabraReservada,palabraReservadacont)
 	i=0
+
 	while i<cad.length
 		cadena2=""
 		cad.each_char do |c|
@@ -252,10 +253,6 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 					CapturarErrorOp(cad,">",palabraReservada,index) ? operadorescont[8]+=1 : 0
 				elsif cad.count("<")==1
 					CapturarErrorOp(cad,"<",palabraReservada,index) ? operadorescont[7]+=1 : 0
-				elsif cad[0]=="}" && cad.length>1
-					cad=cad[1,cad.length]
-				else
-					bandera=false
 				end
 			end
 			if !bandera
@@ -263,9 +260,21 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 			else
 				signoscont[0]+=cad.count("(")					#estos métodos todos cuentan cuantos hay en cada linea
 				signoscont[1]+=cad.count(")")
-				signoscont[2]+=cad.count("{")
-				signoscont[3]+=cad.count("}")
 				signoscont[4]+=cad.count("\"")
+				if cad.include?"{"
+					signoscont[2]+=1
+				elsif cad.include?"}"
+					signoscont[3]+=1
+				end
+				if cad.end_with?('{') && cad.length>1
+					cad=cad[0,cad.length-1]
+				elsif cad[0]=="}" && cad.length>1
+					cad=cad[1,cad.length]
+				end
+				if cad.eql?"do"
+					palabraReservadacont[7]+=1
+				end
+				
 
 				if cad.eql?"int"
 					palabraReservadacont[0]+=1
@@ -275,18 +284,10 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 					palabraReservadacont[2]+=1
 				elsif cad.eql?"string"
 					palabraReservadacont[3]+=1
-				elsif cad.casecmp?"if"
-					palabraReservadacont[4]+=1
-				elsif cad.casecmp?"else"
+				elsif cad.eql?"else"
 					palabraReservadacont[5]+=1
-				elsif cad.casecmp?"while"
-					palabraReservadacont[6]+=1
-				elsif cad.casecmp?"do"
-					palabraReservadacont[7]+=1
-				elsif cad.casecmp?"true"
-					palabraReservadacont[8]+=1
-				elsif cad.casecmp?"false"
-					palabraReservadacont[9]+=1
+				else
+					contarTokens(cad,palabraReservada,palabraReservadacont)
 				end
 				operadorescont[0]+=cad.count("+")
 				operadorescont[1]+=cad.count("-")
@@ -350,22 +351,36 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 					CapturarErrorOp(cad,">",palabraReservada,index) ? operadorescont[8]+=1 : 0
 				elsif cad.count("<")==1
 					CapturarErrorOp(cad,"<",palabraReservada,index) ? operadorescont[7]+=1 : 0
-				elsif cad[0]=="{" && cad.length>1
-					cad=cad[1,cad.length]
-				else
-					bandera=false
+				
 				end
 			end
 			if !bandera
 				CapturarErroresPR(cad,palabraReservada,index)
 			else
+				signoscont[0]+=cad.count("(")	#lo mismo cuento cuantos signos hay en esta linea
+				signoscont[1]+=cad.count(")")
+				
+				
+				signoscont[4]+=cad.count("\"")
+				if cad.include?"{"
+					signoscont[2]+=1
+				elsif cad.include?"}"
+					signoscont[3]+=1
+				end
+				if cad.end_with?('{') && cad.length>1
+					cad=cad[0,cad.length-1]
+				elsif cad[0]=="{" && cad.length>1
+					cad=cad[1,cad.length]
+				end
+				if cad.eql?"do"
+					palabraReservadacont[7]+=1
+				end
 				contarTokens(cad,palabraReservada,palabraReservadacont)
 				signoscont[0]+=cad.count("(")	#lo mismo cuento cuantos signos hay en esta linea
 				signoscont[1]+=cad.count(")")
 				signoscont[2]+=cad.count("{")
 				signoscont[3]+=cad.count("}")
 				signoscont[4]+=cad.count("\"")
-				
 				operadorescont[0]+=cad.count("+")
 				operadorescont[1]+=cad.count("-")
 				operadorescont[2]+=cad.count("*")
