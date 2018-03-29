@@ -4,19 +4,24 @@
 Using namespace std;
 int main ()
 {
-	INTx=0;
-	floAT a;
-	int op=0, numero;
-	whiLe(op!=5){
+	int x=0;
+	float a;
+	int op=0, numero=1;
+	while(op==5){
 		bandera=TrUE;
-		WHILE(bandera)
+		while(bandera && a>=0)
 		{
 			bandera=false;
 			cout<<"Hola";
+			cin>>a;
+			a=a%2;
+			if(a>5)
+				cout<<"Holi";
+			else if(a<4)
 		}
-		DO{
+		do{
 			bandera=true;
-		}while(!bandera);
+		}while(!bandera && a<=0);
 	}
 	return 0;
 }
