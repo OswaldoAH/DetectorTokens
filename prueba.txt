@@ -4,8 +4,9 @@
 Using namespace std;
 int main ()
 {
-	int x=0;
-	float a;
+	booooool bandera;
+	inst x=0;
+	lfoat a;
 	inti op=0, numero=1;
 	while(op==5){
 		bandera=TrUE;

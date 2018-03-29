@@ -50,38 +50,95 @@ pero para esto necesitamos que la pimera bandera este en true
 =end
 def CapturarErroresPR(cad, palabraReservada,index)	#recibe como parametro una cadena, un vector y el indice donde puede ocurrir o no el error
 	
-	if cad.length>1 							#si el tamaño de la cadena que recibe es mayor a 1 hace lo siguiente
+	if ((cad.length>1) && !(cad.eql?"return"))				#si el tamaño de la cadena que recibe es mayor a 1 hace lo siguiente
 		k=0
-		bandera=[true,true,true]
-		while k<cad.length	
+		bandera=[true,true,false]
+		while k<cad.length
 			cadena1=cad[0,k+1]
 			i=0
 			while i<palabraReservada.length&&bandera[1]
 				j=0
+				
 				if cadena1.include?(palabraReservada[i])
-					bandera[1]=false
-				elsif bandera[1]
+					
+					if cad.length>palabraReservada[i].length
+						if !((cadena1.eql?"while") || (cadena1.eql?"if")||(cadena1.eql?"do"))
+							if cadena1.eql?(palabraReservada[i])
+								puts "1 Error en la linea #{index+1} token con error #{palabraReservada[i]}"
+								puts "Linea completa #{cad}"
+								return true
+							else
+								cont=0
+								if !cad.eql?"false"
+									palabraReservada[i].each_char { |c| cadena1.include?(c) ? cont+=1 :0 }
+									if cont==palabraReservada[i].length
+										puts "2 Error en la linea #{index+1} token con error #{palabraReservada[i]}"
+										puts "Linea completa #{cad}"
+										return true
+									end
+								end
+							end
+						else
+
+							cadena2=cad[cadena1.length,cad.length]
+							if !(((cadena1.eql?"while") || (cadena1.eql?"if"))&&(cadena2[0].eql?"("))
+								if !((cadena1.eql?"do")&&(cadena2[0].eql?"{"))
+									puts "3 Error en la linea #{index+1} token con error #{palabraReservada[i]}"
+									puts "Linea completa #{cad}"
+									return true
+								else
+									bandera[1]=false
+								end
+							else
+								bandera[1]=false
+							end
+						end
+					else
+						bandera[1]=false
+					end
+				else
+					
+					if (cadena1==cad) && !(cad.eql?"false")
+						cadena1=cadena1.squeeze
+						cadena1.casecmp?("bol") ? cadena1="bool" : 0
+						palabraReservada.each_with_index  {|array,ind| cadena1.eql?(array) ? i=ind : 0}
+						if cadena1.casecmp?(palabraReservada[i]) && !bandera[2]
+							cadena1=cadena1.downcase
+							bandera[2]=true
+						end
+
+						cont=0	
+						palabraReservada[i].each_char { |c| cadena1.include?(c) ? cont+=1 :0 }
+						
+						if cont==palabraReservada[i].length
+							puts "4 Error en la linea #{index+1} token con error #{palabraReservada[i]}"
+							puts "Linea completa #{cad}"
+							return true
+						end
+					else
+						cadena1=cadena1.squeeze
+						bandera[0]=false
+					end
+				end
+				if bandera[1] && bandera[0]
+					bandera[0]=true
 					while bandera[0]
 						if cadena1.downcase.eql?(palabraReservada[i])
-							puts "Error en la linea #{index+1} token con error #{cadena1}"
+							puts "5 Error en la linea #{index+1} token con error #{palabraReservada[i]}"
 							puts "Linea completa #{cad}"
 							bandera[0]=false
-							bandera[2]=true
+							return true
 						elsif j==palabraReservada.length
-							bandera[2]=false
 							bandera[0]=false
 						end
 						j+=1
 					end
 				end
-				if !bandera[2]
-					bandera[0]=true
-				end
 				i+=1
 			end
 			k+=1
 		end
-		bandera[2] ? 1:2
+		return false
 	end
 end
 
@@ -97,15 +154,34 @@ def CapturarErrorOp(cad,operador,palabraReservada,index)
 	cad1=cad[(cont+1),cad.length]
 	entero=cad1.to_i
 	if cad1[0]=="=" || entero>0 || cad1[0]=="0" || entero<0
-		1
+		true
+	elsif cad1[0]=="t" || cad1[0]=="f" || cad1[0]=="T" || cad1[0]=="F"
+		if cad1.end_with?(";")
+			cad1=cad1[0,cad1.length-1]
+			!CapturarErroresPR(cad1,palabraReservada,index)
+		end
 	elsif entero==0 && cad1.length>0
 		if (operador==">"|| operador=="<")
-			CapturarErroresPR(cad1,palabraReservada,index)
-			puts "Error en la linea #{index+1} en el operador #{operador} linea #{cad}"
+			!CapturarErroresPR(cad1,palabraReservada,index)
 		end
+	else
+		false
 	end
 end
 
+def contarTokens(cad,palabraReservada,palabraReservadacont)
+	i=0
+	while i<cad.length
+		cadena2=""
+		cad.each_char do |c|
+			cadena2+=c
+			if cadena2.eql?(palabraReservada[i])
+				palabraReservadacont[i]+=1
+			end
+		end
+		i+=1
+	end
+end
 #Declaro algunos vectores me sirven mas abajo	
 palabraReservada=["int","float","bool","string","if","else","while","do","true","false"]
 palabraReservadacont=[0,0,0,0,0,0,0,0,0,0]
@@ -124,182 +200,184 @@ end#termina el while
 arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en este caso cada posicion del vector es una "linea del txt"
 	array=array.split(/ /)				 #Sepraro cada linea si es que se puede en array detectando cada espacio
 	cont=0
+	
 	if array.length!=1 && array.length!=0	##si el array su tamaño es diferente de 1 y de 0 hace lo siguiente
 		array.each do |cad|					#each para iterar el array
-			cad=cad.strip					#le quito los tabuladores con ese metodo
-			cad.length>0 ? CapturarErroresPR(cad,palabraReservada,index) : 0		#llamo al metodo creado por mi le mando como parametro la cadena el array y la posicion de la linea
-			signoscont[0]+=cad.count("(")					#estos métodos todos cuentan cuantos hay en cada linea
-			signoscont[1]+=cad.count(")")
-			signoscont[2]+=cad.count("{")
-			signoscont[3]+=cad.count("}")
-			signoscont[4]+=cad.count("\"")
+			cad=cad.strip
+			bandera=true					#le quito los tabuladores con ese metodo
+			if bandera
+				if ((cad.include?"=") && (cad.include?("\!")))
+					if cad.count("=")==1 && cad.count("\!")==1
+						if CapturarErrorOp(cad,"\!",palabraReservada,index)
+							operadorescont[12]+=1
+						else
+							bandera=false
+						end
+					else
+						bandera=false
+					end
+				elsif ((cad.include?"=") && (cad.include?("<")))
+					if cad.count("=")==1 && cad.count("<")==1
+						if CapturarErrorOp(cad,"<",palabraReservada,index)
+							operadorescont[10]+=1
+						else
+							bandera=false
+						end
+					else
+						bandera=false
+					end
+				elsif ((cad.include?"=") && (cad.include?(">")))
+					if cad.count("=")==1 && cad.count(">")==1
+						if CapturarErrorOp(cad,">",palabraReservada,index)
+							operadorescont[9]+=1
+						else
+							bandera=false
+						end
+					else
+						bandera=false
+					end
+				elsif cad.count("==")==2
+					if CapturarErrorOp(cad,"=",palabraReservada,index)
+						operadorescont[6]+=1
+					else
+						bandera=false
+					end
+				elsif cad.count("=")==1
+					if CapturarErrorOp(cad,"=",palabraReservada,index)
+						operadorescont[5]+=1
+					else
+						bandera=false
+					end
+				elsif cad.count(">")==1
+					CapturarErrorOp(cad,">",palabraReservada,index) ? operadorescont[8]+=1 : 0
+				elsif cad.count("<")==1
+					CapturarErrorOp(cad,"<",palabraReservada,index) ? operadorescont[7]+=1 : 0
+				elsif cad[0]=="}" && cad.length>1
+					cad=cad[1,cad.length]
+				else
+					bandera=false
+				end
+			end
+			if !bandera
+				CapturarErroresPR(cad,palabraReservada,index)
+			else
+				signoscont[0]+=cad.count("(")					#estos métodos todos cuentan cuantos hay en cada linea
+				signoscont[1]+=cad.count(")")
+				signoscont[2]+=cad.count("{")
+				signoscont[3]+=cad.count("}")
+				signoscont[4]+=cad.count("\"")
 
-			if cad.casecmp?"int"
-				palabraReservadacont[0]+=1
-			elsif cad.casecmp?"float"
-				palabraReservadacont[1]+=1
-			elsif cad.casecmp?"bool"
-				palabraReservadacont[2]+=1
-			elsif cad.casecmp?"string"
-				palabraReservadacont[3]+=1
-			elsif cad.casecmp?"if"
-				palabraReservadacont[4]+=1
-			elsif cad.casecmp?"else"
-				palabraReservadacont[5]+=1
-			elsif cad.casecmp?"while"
-				palabraReservadacont[6]+=1
-			elsif cad.casecmp?"do"
-				palabraReservadacont[7]+=1
-			elsif cad.casecmp?"true"
-				palabraReservadacont[8]+=1
-			elsif cad.casecmp?"false"
-				palabraReservadacont[9]+=1
+				if cad.eql?"int"
+					palabraReservadacont[0]+=1
+				elsif cad.eql?"float"
+					palabraReservadacont[1]+=1
+				elsif cad.eql?"bool"
+					palabraReservadacont[2]+=1
+				elsif cad.eql?"string"
+					palabraReservadacont[3]+=1
+				elsif cad.casecmp?"if"
+					palabraReservadacont[4]+=1
+				elsif cad.casecmp?"else"
+					palabraReservadacont[5]+=1
+				elsif cad.casecmp?"while"
+					palabraReservadacont[6]+=1
+				elsif cad.casecmp?"do"
+					palabraReservadacont[7]+=1
+				elsif cad.casecmp?"true"
+					palabraReservadacont[8]+=1
+				elsif cad.casecmp?"false"
+					palabraReservadacont[9]+=1
+				end
+				operadorescont[0]+=cad.count("+")
+				operadorescont[1]+=cad.count("-")
+				operadorescont[2]+=cad.count("*")
+				operadorescont[3]+=cad.count("/")
+				operadorescont[4]+=cad.count("%")
+				if cad.end_with?';'								#si la cadena termina con ";" los tomara todos
+					signoscont[5]+=1
+				end
+			end
 			
-			elsif ((cad.include?"=") && (cad.include?("\!")))
-				if cad.count("=")==1 && cad.count("\!")==1
-					if CapturarErrorOp(cad,"\!",palabraReservada,index)==1
-						operadorescont[12]+=1
-					else
-						puts "Error en la linea #{index+1} linea del error #{cad}"
-					end
-				else
-					puts "Error en la linea #{index+1} linea del error #{cad}"
-				end
-			elsif ((cad.include?"=") && (cad.include?("<")))
-				if cad.count("=")==1 && cad.count("<")==1
-					if CapturarErrorOp(cad,"<",palabraReservada,index)==1
-						operadorescont[10]+=1
-					else
-						puts "Error en la linea #{index+1} linea del error #{cad}"
-					end
-				else
-					puts "Error en la linea #{index+1} linea del error #{cad}"
-				end
-			elsif ((cad.include?"=") && (cad.include?(">")))
-				if cad.count("=")==1 && cad.count(">")==1
-					if CapturarErrorOp(cad,">",palabraReservada,index)==1
-						operadorescont[9]+=1
-					else
-						puts "Error en la linea #{index+1} linea del error #{cad}"
-					end
-				else
-					puts "Error en la linea #{index+1} linea del error #{cad}"
-				end
-			elsif cad.count("==")==2
-				if CapturarErrorOp(cad,"=",palabraReservada,index)==1
-					operadorescont[6]+=1
-				else
-					puts "Error en la linea #{index+1} linea del error #{cad}"
-				end
-			elsif cad.count(">")==1
-				CapturarErrorOp(cad,">",palabraReservada,index)==1 ? operadorescont[8]+=1 : 0
-			elsif cad.count("<")==1
-				CapturarErrorOp(cad,"<",palabraReservada,index)==1 ? operadorescont[7]+=1 : 0
-			end
-			# palabraReservadacont[4]+=cad.count("if")
-			# palabraReservadacont[5]+=cad.count("else")
-			# palabraReservadacont[6]+=cad.count("while")
-			# palabraReservadacont[7]+=cad.count("do")
-			# palabraReservadacont[8]+=cad.count("true")
-			# palabraReservadacont[9]+=cad.count("false")
-			operadorescont[0]+=cad.count("+")
-			operadorescont[1]+=cad.count("-")
-			operadorescont[2]+=cad.count("*")
-			operadorescont[3]+=cad.count("/")
-			operadorescont[4]+=cad.count("%")
-			if cad.end_with?';'								#si la cadena termina con ";" los tomara todos
-				signoscont[5]+=1
-			end
+			
 		end 								#termina el if
-	elsif array.length==1 					#de lo contrario si la cadena es 1 sola linea hago lo siguiente
+	elsif array.length==1 && array.length!=0					#de lo contrario si la cadena es 1 sola linea hago lo siguiente
 			cad=array[0].strip 				#le vuelvo a quitar los tabuladores en este caso jalo del array =0 porque como es solo 1 vector
-			cad.length>0 ? CapturarErroresPR(cad,palabraReservada,index) : 0  #vuelvo a llamar a mi método
-
-			if cad.casecmp?"int"
-				palabraReservadacont[0]+=1
-			elsif cad.casecmp?"float"
-				palabraReservadacont[1]+=1
-			elsif cad.casecmp?"bool"
-				palabraReservadacont[2]+=1
-			elsif cad.casecmp?"string"
-				palabraReservadacont[3]+=1
-			elsif cad.casecmp?"if"
-				palabraReservadacont[4]+=1
-			elsif cad.casecmp?"else"
-				palabraReservadacont[5]+=1
-			elsif cad.casecmp?"while"
-				palabraReservadacont[6]+=1
-			elsif cad.casecmp?"do"
-				palabraReservadacont[7]+=1
-			elsif cad.casecmp?"true"
-				palabraReservadacont[8]+=1
-			elsif cad.casecmp?"false"
-				palabraReservadacont[9]+=1
-			end
-			signoscont[0]+=cad.count("(")	#lo mismo cuento cuantos signos hay en esta linea
-			signoscont[1]+=cad.count(")")
-			signoscont[2]+=cad.count("{")
-			signoscont[3]+=cad.count("}")
-			signoscont[4]+=cad.count("\"")
-			if ((cad.include?"=") && (cad.include?("\!")))
-				if cad.count("=")==1 && cad.count("\!")==1
-					if CapturarErrorOp(cad,"\!",palabraReservada,index)==1
-						operadorescont[12]+=1
+			bandera=true
+			if bandera
+				if ((cad.include?"=") && (cad.include?("\!")))
+					if cad.count("=")==1 && cad.count("\!")==1
+						if CapturarErrorOp(cad,"\!",palabraReservada,index)
+							operadorescont[12]+=1
+						else
+							bandera=false
+						end
 					else
-						puts "Error en la linea #{index+1} linea del error #{cad}"
+						bandera=false
 					end
-				else
-					puts "Error en la linea #{index+1} linea del error #{cad}"
-				end
-			elsif ((cad.include?"=") && (cad.include?("<")))
-				if cad.count("=")==1 && cad.count("<")==1
-					if CapturarErrorOp(cad,"<",palabraReservada,index)==1
-						operadorescont[10]+=1
+				elsif ((cad.include?"=") && (cad.include?("<")))
+					if cad.count("=")==1 && cad.count("<")==1
+						if CapturarErrorOp(cad,"<",palabraReservada,index)
+							operadorescont[10]+=1
+						else
+							bandera=false
+						end
 					else
-						puts "Error en la linea #{index+1} linea del error #{cad}"
+						bandera=false
 					end
-				else
-					puts "Error en la linea #{index+1} linea del error #{cad}"
-				end
-			elsif ((cad.include?"=") && (cad.include?(">")))
-				if cad.count("=")==1 && cad.count(">")==1
-					if CapturarErrorOp(cad,">",palabraReservada,index)==1
-						operadorescont[9]+=1
+				elsif ((cad.include?"=") && (cad.include?(">")))
+					if cad.count("=")==1 && cad.count(">")==1
+						if CapturarErrorOp(cad,">",palabraReservada,index)
+							operadorescont[9]+=1
+						else
+							bandera=false
+						end
 					else
-						puts "Error en la linea #{index+1} linea del error #{cad}"
+						bandera=false
 					end
+				elsif cad.count("==")==2
+					if CapturarErrorOp(cad,"=",palabraReservada,index)
+						operadorescont[6]+=1
+					else
+						bandera=false
+					end
+				elsif cad.count("=")==1
+					if CapturarErrorOp(cad,"=",palabraReservada,index)
+						operadorescont[5]+=1
+					else
+						bandera=false
+					end
+				elsif cad.count(">")==1
+					CapturarErrorOp(cad,">",palabraReservada,index) ? operadorescont[8]+=1 : 0
+				elsif cad.count("<")==1
+					CapturarErrorOp(cad,"<",palabraReservada,index) ? operadorescont[7]+=1 : 0
+				elsif cad[0]=="{" && cad.length>1
+					cad=cad[1,cad.length]
 				else
-					puts "Error en la linea #{index+1} linea del error #{cad}"
+					bandera=false
 				end
-			elsif cad.count("==")==2
-				if CapturarErrorOp(cad,"=",palabraReservada,index)==1
-					operadorescont[6]+=1
-				else
-					puts "Error en la linea #{index+1} linea del error #{cad}"
+			end
+			if !bandera
+				CapturarErroresPR(cad,palabraReservada,index)
+			else
+				contarTokens(cad,palabraReservada,palabraReservadacont)
+				signoscont[0]+=cad.count("(")	#lo mismo cuento cuantos signos hay en esta linea
+				signoscont[1]+=cad.count(")")
+				signoscont[2]+=cad.count("{")
+				signoscont[3]+=cad.count("}")
+				signoscont[4]+=cad.count("\"")
+				
+				operadorescont[0]+=cad.count("+")
+				operadorescont[1]+=cad.count("-")
+				operadorescont[2]+=cad.count("*")
+				operadorescont[3]+=cad.count("/")
+				operadorescont[4]+=cad.count("%")
+				if cad.end_with?';'
+					signoscont[5]+=1
 				end
-			elsif cad.count(">")==1
-				CapturarErrorOp(cad,">",palabraReservada,index)==1 ? operadorescont[8]+=1 : 0
-			elsif cad.count("<")==1
-				CapturarErrorOp(cad,"<",palabraReservada,index)==1 ? operadorescont[7]+=1 : 0
 			end
-			# palabraReservadacont[0]+=cad.count("int","^i","^n","^t")
-			# palabraReservadacont[1]+=cad.count("float")
-			# palabraReservadacont[2]+=cad.count("bool")
-			# palabraReservadacont[3]+=cad.count("String")
-			# palabraReservadacont[4]+=cad.count("if")
-			# palabraReservadacont[5]+=cad.count("else")
-			# palabraReservadacont[6]+=cad.count("while")
-			# palabraReservadacont[7]+=cad.count("do")
-			# palabraReservadacont[8]+=cad.count("true")
-			# palabraReservadacont[9]+=cad.count("false")
-			operadorescont[0]+=cad.count("+")
-			operadorescont[1]+=cad.count("-")
-			operadorescont[2]+=cad.count("*")
-			operadorescont[3]+=cad.count("/")
-			operadorescont[4]+=cad.count("%")
-			if cad.end_with?';'
-				signoscont[5]+=1
-			end
+			
+			
+			
 	end
 end
 #muestro la cantidad de signos que se encontraron
