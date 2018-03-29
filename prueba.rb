@@ -49,6 +49,7 @@ pero para esto necesitamos que la pimera bandera este en true
 #termina el metodo
 =end
 def CapturarErroresPR(cad, palabraReservada,index)	#recibe como parametro una cadena, un vector y el indice donde puede ocurrir o no el error
+	
 	if cad.length>1 							#si el tamaño de la cadena que recibe es mayor a 1 hace lo siguiente
 		k=0
 		bandera=[true,true,true]
@@ -95,15 +96,13 @@ def CapturarErrorOp(cad,operador,palabraReservada,index)
 	end
 	cad1=cad[(cont+1),cad.length]
 	entero=cad1.to_i
-
-	if cad1[0]=="="
+	if cad1[0]=="=" || entero>0 || cad1[0]=="0" || entero<0
 		1
 	elsif entero==0 && cad1.length>0
-		if (operador==">"|| operador=="<") && CapturarErroresPR(cad1,palabraReservada,index)==2
+		if (operador==">"|| operador=="<")
+			CapturarErroresPR(cad1,palabraReservada,index)
 			puts "Error en la linea #{index+1} en el operador #{operador} linea #{cad}"
 		end
-	elsif entero>0
-		1
 	end
 end
 
@@ -215,6 +214,28 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 	elsif array.length==1 					#de lo contrario si la cadena es 1 sola linea hago lo siguiente
 			cad=array[0].strip 				#le vuelvo a quitar los tabuladores en este caso jalo del array =0 porque como es solo 1 vector
 			cad.length>0 ? CapturarErroresPR(cad,palabraReservada,index) : 0  #vuelvo a llamar a mi método
+
+			if cad.casecmp?"int"
+				palabraReservadacont[0]+=1
+			elsif cad.casecmp?"float"
+				palabraReservadacont[1]+=1
+			elsif cad.casecmp?"bool"
+				palabraReservadacont[2]+=1
+			elsif cad.casecmp?"string"
+				palabraReservadacont[3]+=1
+			elsif cad.casecmp?"if"
+				palabraReservadacont[4]+=1
+			elsif cad.casecmp?"else"
+				palabraReservadacont[5]+=1
+			elsif cad.casecmp?"while"
+				palabraReservadacont[6]+=1
+			elsif cad.casecmp?"do"
+				palabraReservadacont[7]+=1
+			elsif cad.casecmp?"true"
+				palabraReservadacont[8]+=1
+			elsif cad.casecmp?"false"
+				palabraReservadacont[9]+=1
+			end
 			signoscont[0]+=cad.count("(")	#lo mismo cuento cuantos signos hay en esta linea
 			signoscont[1]+=cad.count(")")
 			signoscont[2]+=cad.count("{")
