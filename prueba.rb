@@ -282,17 +282,32 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 				end
 				
 
+				#Cuenta la cantidad de variables int que hayan dentro del programa
 				if cad.eql?"int"
 					palabraReservadacont[0]+=1
+					#Comparación: el método main no lo tomará en cuenta, para eso sirve el unless
 					unless array.include?"main"
+						#Comparar cada posición del array
 						array.each do |var|
-							unless var.include?"int"
-								valor = var.split("=")
+							#verifica las variables
+							if !var.include?"int" and !var.include?")"
+								valor = var.split("=")								
+								variablesInt[posicion] = valor[0]
+								posicion+=1
+							
+							#si incluye un símbolo ( es porque es una función con parámetros
+							elsif var.include?"("
+								valor = var.split("(")
+								variablesInt[posicion] = valor[0]
+								posicion+=1
+							#si incluye un símbolo ) es porque es el parámetro de la función
+							elsif var.include?")"
+								valor = var.split(")")
 								variablesInt[posicion] = valor[0]
 								posicion+=1
 							end
 						end
-					end	
+					end
 				elsif cad.eql?"float"
 					palabraReservadacont[1]+=1
 				elsif cad.eql?"bool"
@@ -400,9 +415,6 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 					signoscont[5]+=1
 				end
 			end
-			
-			
-			
 	end
 end
 #muestro la cantidad de signos que se encontraron

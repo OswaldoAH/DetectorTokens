@@ -2,6 +2,9 @@
 #include <conio.h>
 
 using namespace std;
+
+int valor(int a);
+
 int main ()
 {
 	bool bandera;
@@ -26,4 +29,10 @@ int main ()
 		}while(!bandera && a<=0);
 	}
 	return 0;
+}
+
+int valor(int a)
+{
+	a++;
+	return a;
 }
