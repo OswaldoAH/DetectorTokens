@@ -8,6 +8,7 @@ int main ()
 	int x=0;
 	float a;
 	int op=0, numero=1;
+	int var=3;
 	while(op==5){
 		bandera=true;
 		while(bandera && a>=0)
