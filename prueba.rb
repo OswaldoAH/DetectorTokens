@@ -193,17 +193,22 @@ signoscont=[0,0,0,0,0,0]
 file=Archivos.new("prueba.txt") #instancio la clase
 cont=0 #contador que me va a servir para mi array
 arreglo=Array.new(1) #declaro el array no importa el tamaño
+variablesInt = Array.new(1) #Array donde se van a guardar las variables
+posicion = 0
 
 while linea=file.archivo.gets#mientras tenga lineas el txt va a hacer lo siguiente
 	arreglo[cont]=linea.chomp #guardo en el array la linea y le quito el salto de linea
 	cont+=1 #incremento cont
 end#termina el while
 arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en este caso cada posicion del vector es una "linea del txt"
+	#puts arreglo[index]
 	array=array.split(/ /)				 #Sepraro cada linea si es que se puede en array detectando cada espacio
 	cont=0
 	
 	if array.length!=1 && array.length!=0	##si el array su tamaño es diferente de 1 y de 0 hace lo siguiente
-		array.each do |cad|					#each para iterar el array
+		#puts array[cont]
+		array.each do |cad| #each para iterar el array
+			#puts cad
 			cad=cad.strip
 			bandera=true					#le quito los tabuladores con ese metodo
 			if bandera
@@ -279,6 +284,15 @@ arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en 
 
 				if cad.eql?"int"
 					palabraReservadacont[0]+=1
+					unless array.include?"main"
+						array.each do |var|
+							unless var.include?"int"
+								valor = var.split("=")
+								variablesInt[posicion] = valor[0]
+								posicion+=1
+							end
+						end
+					end	
 				elsif cad.eql?"float"
 					palabraReservadacont[1]+=1
 				elsif cad.eql?"bool"
@@ -403,5 +417,10 @@ puts "---------------------------------------------------------"
 for i in (0..operadorescont.length-1)
 	puts "Se encontraron #{operadorescont[i]} veces el operador #{operadores[i]}"
 end
-# puts "---------------------------------------------------------"
-
+puts "---------------------------------------------------------"
+puts "Cantidad de variables tipo int: #{posicion}"
+puts "Variables tipo int"
+for i in(0..variablesInt.length-1)
+	puts "#{variablesInt[i]}"
+end
+puts "---------------------------------------------------------"
