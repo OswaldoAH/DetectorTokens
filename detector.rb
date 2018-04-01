@@ -1,6 +1,6 @@
 Shoes.app :title=>"Prueba",
 	:width=>1100, 
-	:height=>500,
+	:height=>525,
  	:margin=>10,
  	:resizable => false do
  	
@@ -50,6 +50,7 @@ Shoes.app :title=>"Prueba",
 				#Condición para verificar si ya se seleccionó un archivo o no
 				unless @var.to_i.zero? 
 					alert("Siga adelante") #Acá iría la llamada a la función CapturarErroresPR
+					grafica1
 				else
 					alert("Seleccione un archivo")
 				end
@@ -67,17 +68,43 @@ Shoes.app :title=>"Prueba",
 	end
 
 	#Se usa la otra mitad de la pantalla que se dividió arriba
-	widget_width = 500
-	widget_height = 400
-	stack :width =>"50%" do
-		flow :width=>"100%" do
-			@grf = plot widget_width, widget_height, title: "Gráfica", caption:
-			"Amazing!!", font: "Mono", auto_grid: false,
-			default: "skip", background: cornsilk, chart: "column", boundary_box: true
+	#método para imprimir la gráfica 1
+	def grafica1
+		stack :width => "50%" do
+			flow :width => "100%" do
+				widget_width = 500
+				widget_height = 400
+		
+				@grf = plot widget_width, widget_height, title: "Gráfica", caption:
+				"Amazing!!", font: "Mono", auto_grid: false,
+				default: "skip", background: cornsilk, chart: "column", boundary_box: false
+			end
 		end
+
+		@grf.add values: @values1, labels: @x_axis1,
+			name: "", min: 0, max: 30, color: rgb(220, 20, 60, 172),
+			points: true, strokewidth: 25
 	end
 
-	@grf.add values: @values1, labels: @x_axis1,
-		name: "", min: 0, max: 30, color: rgb(220, 20, 60, 172),
-		points: true, strokewidth: 25
+	#acá estaba probando a meter la gráfica 2 y sí pude, pero no la pone donde debe ser
+	def grafica2
+		stack :width => "-50%" do
+			flow :width => "100%" do
+				widget_width = 500
+				widget_height = 400
+		
+				@grf = plot 100, 100, widget_width, widget_height, title: "Gráfica 2", caption:
+				"Amazing!!", font: "Mono", auto_grid: false,
+				default: "skip", background: cornsilk, chart: "column", boundary_box: false
+			end
+		end
+
+		@grf.add values: @values1, labels: @x_axis1,
+			name: "", min: 0, max: 30, color: rgb(220, 20, 60, 172),
+			points: true, strokewidth: 25
+	end
+
+	button("Siguiente", :top=>100, :left=>100) do
+		#grafica2
+	end
 end
