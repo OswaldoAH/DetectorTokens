@@ -4,6 +4,9 @@ Shoes.app :title=>"Prueba",
  	:margin=>10,
  	:resizable => false do
  	
+ 	@values1 = [24, 22, 10, 13, 8, 22]
+ 	@x_axis1 = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+
   	background "#02E488".."#220909"
 	
 	#Área donde está el texto central
@@ -64,8 +67,17 @@ Shoes.app :title=>"Prueba",
 	end
 
 	#Se usa la otra mitad de la pantalla que se dividió arriba
-	stack :width=>"50%" do
-		#Acá aparecerán los tokens encontrados o los errores que tenga el archivo
-		@editB = edit_box(:top=>10, :left=>10, :width=>500, :height=>400)
+	widget_width = 500
+	widget_height = 400
+	stack :width =>"50%" do
+		flow :width=>"100%" do
+			@grf = plot widget_width, widget_height, title: "Gráfica", caption:
+			"Amazing!!", font: "Mono", auto_grid: false,
+			default: "skip", background: cornsilk, chart: "column", boundary_box: true
+		end
 	end
+
+	@grf.add values: @values1, labels: @x_axis1,
+		name: "", min: 0, max: 30, color: rgb(220, 20, 60, 172),
+		points: true, strokewidth: 25
 end
