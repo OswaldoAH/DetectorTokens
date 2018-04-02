@@ -4,8 +4,9 @@ Shoes.app :title=>"Prueba",
  	:margin=>10,
  	:resizable => false do
  	
+ 	
  	@values1 = [24, 22, 10, 13, 8, 22]
- 	@x_axis1 = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+ 	@x_axis1 = ['a', 'b', 'c', 'd', 'e', 'f']
 
   	background "#02E488".."#220909"
 	
@@ -77,34 +78,12 @@ Shoes.app :title=>"Prueba",
 		
 				@grf = plot widget_width, widget_height, title: "Gráfica", caption:
 				"Amazing!!", font: "Mono", auto_grid: false,
-				default: "skip", background: cornsilk, chart: "column", boundary_box: false
+				default: "skip", background: cornsilk, chart: "pie", boundary_box: false
 			end
 		end
 
 		@grf.add values: @values1, labels: @x_axis1,
 			name: "", min: 0, max: 30, color: rgb(220, 20, 60, 172),
 			points: true, strokewidth: 25
-	end
-
-	#acá estaba probando a meter la gráfica 2 y sí pude, pero no la pone donde debe ser
-	def grafica2
-		stack :width => "-50%" do
-			flow :width => "100%" do
-				widget_width = 500
-				widget_height = 400
-		
-				@grf = plot 100, 100, widget_width, widget_height, title: "Gráfica 2", caption:
-				"Amazing!!", font: "Mono", auto_grid: false,
-				default: "skip", background: cornsilk, chart: "column", boundary_box: false
-			end
-		end
-
-		@grf.add values: @values1, labels: @x_axis1,
-			name: "", min: 0, max: 30, color: rgb(220, 20, 60, 172),
-			points: true, strokewidth: 25
-	end
-
-	button("Siguiente", :top=>100, :left=>100) do
-		#grafica2
 	end
 end
