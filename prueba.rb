@@ -502,9 +502,9 @@ pero para esto necesitamos que la pimera bandera este en true
 #termina el metodo
 =end
 
- # dTokens=DetectorTokens.new#instancio la clase
- # dTokens.rutaArchivo("C:/Users/hecto/Documents/DetectorTokens/prueba.txt")
- # dTokens.EjecutarDetector
+ dTokens=DetectorTokens.new#instancio la clase
+ dTokens.rutaArchivo("D:/Ruby/Proyecto Lenguajes/prueba.txt")
+ dTokens.EjecutarDetector
 #muestro la cantidad de signos que se encontraron
 for i in (0..dTokens.palabraReservadacont.length-1)
 	puts "#{i} Se encontraron #{dTokens.palabraReservadacont[i]} veces la palabra reservada #{dTokens.palabraReservada[i]}"
