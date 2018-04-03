@@ -40,6 +40,7 @@ class DetectorTokens
 		@variablesBoolCont=Array.new
 		@variablesString=Array.new
 		@variablesStringCont=Array.new
+		true
 	end
 
 	def rutaArchivo(ruta)
@@ -181,6 +182,7 @@ class DetectorTokens
 
 	def BuscarVector(pr,variable)
 		variable.end_with?(";") ? variable=variable[0,variable.length-1] : variable
+		#puts variable
 		case pr
 		when "int"
 			if variablesInt.length==0
@@ -243,7 +245,25 @@ class DetectorTokens
 				end
 			end
 		when "string"
-
+			if variablesString.length==0
+				variablesString[0]=variable
+				variablesStringCont[0]=1
+			else
+				x=0
+				encontrado=false
+				variablesString.each_with_index do |var,index| 
+					if var.eql?(variable) 
+						variablesStringCont[index]+=1 
+						encontrado=true 
+					else
+						x=index
+					end
+				end
+				if !encontrado
+					variablesString[x+1]=variable
+					variablesStringCont[x+1]=1
+				end
+			end
 		end
 	end
 	def ContarVariables(array,index,pr) 
@@ -251,6 +271,7 @@ class DetectorTokens
 		#Comparar cada posición del array
 		array.each do |var|
 			#verifica las variables
+			puts "pr: #{pr}"
 			if !var.include?(pr) and !var.include?")"
 				if var.count("=")==1
 					CapturarErrorOp(var,"=",index)? @operadorescont[5]+=1 : 0
@@ -305,6 +326,9 @@ class DetectorTokens
 		elsif array[0].eql?"bool"
 			@palabraReservadacont[2]+=1
 			ContarVariables(array,index,"bool")
+		elsif array[0].eql?"string"
+			@palabraReservadacont[3]+=1
+			ContarVariables(array,index,"string")
 		elsif array.length!=1 && array.length!=0	##si el array su tamaño es diferente de 1 y de 0 hace lo siguiente
 			#puts array[cont]
 			array.each do |cad| #each para iterar el array
@@ -503,7 +527,7 @@ pero para esto necesitamos que la pimera bandera este en true
 =end
 
  dTokens=DetectorTokens.new#instancio la clase
- dTokens.rutaArchivo("D:/Ruby/Proyecto Lenguajes/prueba.txt")
+ dTokens.rutaArchivo("prueba.txt")
  dTokens.EjecutarDetector
 #muestro la cantidad de signos que se encontraron
 for i in (0..dTokens.palabraReservadacont.length-1)
@@ -541,4 +565,12 @@ for i in(0..dTokens.variablesBool.length-1)
 	x+=dTokens.variablesBoolCont[i]
 end
 puts "Cantidad de variables tipo bool: #{x}"
+puts "---------------------------------------------------------"
+puts "Variables tipo String"
+x=0
+for i in(0..dTokens.variablesString.length-1)
+	puts "#{dTokens.variablesString[i]} aparece #{dTokens.variablesStringCont[i]}"
+	x+=dTokens.variablesStringCont[i]
+end
+puts "Cantidad de variables tipo String: #{x}"
 puts "---------------------------------------------------------"
