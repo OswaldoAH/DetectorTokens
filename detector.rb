@@ -40,11 +40,27 @@ class DetectorTokens
 		@variablesBoolCont=Array.new
 		@variablesString=Array.new
 		@variablesStringCont=Array.new
+		@arregloPrueba=Array.new
+		@contPrueba=0
 		true
+	end
+
+	def imprimir
+		while linea=@archivo.gets
+			@arreglo[@cont]=linea.chomp
+			@cont+=1
+		end
+	end
+
+	def imprimirArreglo
+		@arreglo.each_with_index do |item|
+			puts item
+		end
 	end
 
 	def rutaArchivo(ruta)
 		@archivo=File.open(ruta)
+		#@archivo=File.read(ruta)
 	end
 
 	def archivo
@@ -271,7 +287,7 @@ class DetectorTokens
 		#Comparar cada posición del array
 		array.each do |var|
 			#verifica las variables
-			puts "pr: #{pr}"
+			#puts "pr: #{pr}"
 			if !var.include?(pr) and !var.include?")"
 				if var.count("=")==1
 					CapturarErrorOp(var,"=",index)? @operadorescont[5]+=1 : 0
@@ -303,12 +319,11 @@ class DetectorTokens
 	end
 
 	def EjecutarDetector
-		while linea=@archivo.gets#mientras tenga lineas el txt va a hacer lo siguiente
-			@arreglo[@cont]=linea.chomp #guardo en el array la linea y le quito el salto de linea
-			@cont+=1 #incremento cont
-		end#termina el while
+		# while linea=@archivo.gets#mientras tenga lineas el txt va a hacer lo siguiente
+		# 	@arreglo[@cont]=linea.chomp #guardo en el array la linea y le quito el salto de linea
+		# 	@cont+=1 #incremento cont
+		# end#termina el while
 		@arreglo.each_with_index do |array,index| #each para ir iterrar el vector que en este caso cada posicion del vector es una "linea del txt"
-		#puts arreglo[index]
 		array=array.split(/ /)			 #Sepraro cada linea si es que se puede en array detectando cada espacio
 		cont=0
 		array[0].eql?(nil) ? 0 : array[0]=array[0].strip
@@ -528,8 +543,10 @@ pero para esto necesitamos que la pimera bandera este en true
 
  dTokens=DetectorTokens.new#instancio la clase
  dTokens.rutaArchivo("prueba.txt")
+ dTokens.imprimir
+ dTokens.imprimirArreglo
  dTokens.EjecutarDetector
-#muestro la cantidad de signos que se encontraron
+# #muestro la cantidad de signos que se encontraron
 for i in (0..dTokens.palabraReservadacont.length-1)
 	puts "#{i} Se encontraron #{dTokens.palabraReservadacont[i]} veces la palabra reservada #{dTokens.palabraReservada[i]}"
 end
