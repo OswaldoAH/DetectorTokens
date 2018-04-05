@@ -628,7 +628,9 @@ class Ventana
 								@x_axis1[i]=@detector.palabraReservada[i]
 								string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
 							end
-							#alert string, :title => "Palabras Reservadas"
+							#
+							alert string, :title => "Palabras Reservadas"
+							grafica1
 						else
 							alert("Seleccione un archivo")
 						end
@@ -637,7 +639,6 @@ class Ventana
 					#Caption que se usa sólo para colocar un texto
 					@captionRuta = caption(:top=>170, :left=>60)
 					@captionRuta.text = "Ruta: "
-					grafica1
 					#Caption en el que se coloca la ruta del archivo seleccionado
 					@captionPath = caption(:top =>170, :left=>120)
 					@captionPath.size = 13
