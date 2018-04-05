@@ -22,7 +22,7 @@ int main ()
 			bandera=false;
 			cout<<"Hola";
 			cin>>a;
-			if (a>5)
+			if(a>5)
 				cout<<"Holi";
 			else if(a<-5)
 		}
