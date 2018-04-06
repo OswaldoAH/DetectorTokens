@@ -615,10 +615,11 @@ class Ventana
 					end
 
 					#ComboBox
-					list_box :top=>70, :left =>500, :items => ["Palabras Reservadas", "Variables Int"],
-						:choose => "Palabras Reservadas" do |list|
-							list_box = list.text
-						end
+					list_box :top=>70, :left =>500, :items => ["Palabras Reservadas", "Signos", "Operadores",
+						"Variables Int", "Variables Float", "Variables bool", "Variables String"]
+						# :choose => "Palabras Reservadas" do |list|
+						# 	list_box = list.text
+						# end
 
 					#Botón mostrar gráfica
 					button "Mostrar Gráfica", :top=>130, :left =>515 do
@@ -655,10 +656,6 @@ class Ventana
 					@captionPath.width = 400
 				end
 			end
-
-			#Se usa la otra mitad de la pantalla que se dividió arriba
-			#método para imprimir la gráfica 1
-
 
 			def grafica1(valores, eje)
 				Shoes.app width: 500, height: 500 do
