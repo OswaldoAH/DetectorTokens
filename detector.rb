@@ -721,81 +721,6 @@ class Ventana
 			@textoErrores =edit_box :top=>400, :left=>0, :width=>500, :height=>100
 			@captionErrores = caption(:top=>375, :left=>0)
 			@captionErrores.text ="Errores: "
-<<<<<<< HEAD
-	def establecerGrafica(valorGrafica)
-		string=""
-		if(valorGrafica == 1)
-			for i in (0..@detector.palabraReservada.length-1)
-				@values1[i]=@detector.palabraReservadacont[i]
-				@x_axis1[i]=@detector.palabraReservada[i]
-				string+="Se encontro #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Palabras Reservadas"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 2
-			for i in (0..@detector.signos.length-1)
-				@values1[i]=@detector.signoscont[i]
-				@x_axis1[i]=@detector.signos[i]
-				string+="Se encontro #{@values1[i]} veces el signo #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Signos"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 3
-			for i in (0..@detector.operadores.length-1)
-				@values1[i]=@detector.operadorescont[i]
-				@x_axis1[i]=@detector.operadores[i]
-				string+="Se encontro #{@values1[i]} veces el operador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Operadores"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 4
-			for i in (0..@detector.variablesInt.length-1)
-				@values1[i]=@detector.variablesIntCont[i]
-				@x_axis1[i]=@detector.variablesInt[i]
-				string+="Se encontro #{@values1[i]} veces el identificador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Identificador INT"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 5
-			for i in (0..@detector.variablesFloat.length-1)
-				@values1[i]=@detector.variablesFloatCont[i]
-				@x_axis1[i]=@detector.variablesFloat[i]
-				string+="Se encontro #{@values1[i]} veces el identificador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Identificador FLOAT"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 6
-			for i in (0..@detector.variablesBool.length-1)
-				@values1[i]=@detector.variablesBoolCont[i]
-				@x_axis1[i]=@detector.variablesBool[i]
-				string+="Se encontro #{@values1[i]} veces el identificador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Identificador BOOL"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 7
-			for i in (0..@detector.variablesString.length-1)
-				@values1[i]=@detector.variablesStringCont[i]
-				@x_axis1[i]=@detector.variablesString[i]
-				string+="Se encontro #{@values1[i]} veces el identificador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Identificador STRING"
-			grafica1(@values1, @x_axis1)
-		end
-		@values1 = Array.new
-		@x_axis1 = Array.new
-	end
-	
-	def grafica1(valores, eje)
-		Shoes.app width: 500, height: 500 do
-			widget_width = 500
-			widget_height = 500
-			@valorMax = 0
-			if(valores.length > 1 and eje.length > 1)
-				@arrayNuevo = valores.sort.reverse
-				@valorMax = @arrayNuevo[0]+1;
-			else
-				@valorMax = valores[0]
-=======
 				def establecerGrafica(valorGrafica)
 				string=""
 				if(valorGrafica == 1)
@@ -885,7 +810,6 @@ class Ventana
 				end
 				@values1 = Array.new
 				@x_axis1 = Array.new
->>>>>>> feature/Oswaldo
 			end
 
 			def grafica1(valores, eje)
