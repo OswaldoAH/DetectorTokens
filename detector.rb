@@ -21,12 +21,14 @@ class DetectorTokens
 	attr_accessor :variablesBoolCont  
 	attr_accessor :variablesString    
 	attr_accessor :variablesStringCont
+	attr_accessor :erroresNoLinea
+	attr_accessor :erroresLinea  
 
 	def initialize
 		@palabraReservada=["int","float","bool","string","if","else","while","do","true","false"]
 		@palabraReservadacont=[0,0,0,0,0,0,0,0,0,0]
-		@operadores=["+","-","*","/","%","=","==","<",">",">=","<=","\!","\!="]
-		@operadorescont=[0,0,0,0,0,0,0,0,0,0,0,0,0]
+		@operadores=["+","-","*","/","%","=","==","<",">",">=","<="]
+		@operadorescont=[0,0,0,0,0,0,0,0,0,0,0]
 		@signos=["(",")","{","}","\"",";"]
 		@signoscont=[0,0,0,0,0,0]
 		@variablesIntCont=Array.new(1)
@@ -40,31 +42,21 @@ class DetectorTokens
 		@variablesBoolCont=Array.new
 		@variablesString=Array.new
 		@variablesStringCont=Array.new
-		@arregloPrueba=Array.new
-		@contPrueba=0
+		@erroresNoLinea = Array.new
+		@erroresLinea = Array.new
 	end
 
 	def pasarArray
-		while linea=@archivo.gets
-			@arreglo[@cont]=linea.chomp
-			@cont+=1
-		end
-	end
-
-	def imprimirArreglo
-		@arreglo.each_with_index do |item|
-			puts item
-		end
+		while linea=@archivo.gets#mientras tenga lineas el txt va a hacer lo siguiente
+			@arreglo[@cont]=linea.chomp #guardo en el array la linea y le quito el salto de linea
+			@arreglo[@cont].end_with?(';') ? @signoscont[5]+=1 : 0
+			@cont+=1 #incremento cont
+		end#termina el while
 	end
 
 	def rutaArchivo(ruta)
 		@archivo=File.open(ruta)
 		pasarArray
-		@archivo
-	end
-
-	def archivo
-		@archivo
 	end
 
 	def CapturarErroresPR(cad,index)	#recibe como parametro una cadena, un vector y el indice donde puede ocurrir o no el error
@@ -72,34 +64,34 @@ class DetectorTokens
 			k=0
 			bandera=[true,true,false]
 			while k<cad.length
-			 	cadena1=cad[0,k+1]
-			 	i=0
-			 	while i<@palabraReservada.length&&bandera[1]
-			 		j=0
-			 		if cadena1.include?(@palabraReservada[i])
-			 			if cad.length>@palabraReservada[i].length
-			 				if !((cadena1.eql?"while") || (cadena1.eql?"if")||(cadena1.eql?"do"))
+				cadena1=cad[0,k+1]
+				i=0
+				while i<@palabraReservada.length&&bandera[1]
+					j=0
+					if cadena1.include?(@palabraReservada[i])
+						if cad.length>@palabraReservada[i].length
+							if !((cadena1.eql?"while") || (cadena1.eql?"if")||(cadena1.eql?"do"))
 								if cadena1.eql?(@palabraReservada[i])
-									"Error en la linea #{index+1} "
-									"Linea completa con el error #{cad}"
+									erroresNoLinea << index+1
+									erroresLinea << cad
 									return true
 								else
 									cont=0
 									if !cad.eql?"false"
 										@palabraReservada[i].each_char { |c| cadena1.include?(c) ? cont+=1 :0 }
 										if cont==@palabraReservada[i].length
-											"Error en la linea #{index+1} "
-											"Linea completa con el error #{cad}"
+											erroresNoLinea << index+1
+											erroresLinea << cad
 											return true
 										end
 									end
 								end
-			 				else
-			 					cadena2=cad[cadena1.length,cad.length]
+							else
+								cadena2=cad[cadena1.length,cad.length]
 								if !(((cadena1.eql?"while") || (cadena1.eql?"if"))&&(cadena2[0].eql?"("))
 									if !((cadena1.eql?"do")&&(cadena2[0].eql?"{"))
-										"Error en la linea #{index+1} "
-										"Linea completa con el error #{cad}"
+										erroresNoLinea << index+1
+										erroresLinea << cad
 										return true
 									else
 										bandera[1]=false
@@ -107,23 +99,18 @@ class DetectorTokens
 								else
 									bandera[1]=false
 								end
-			 				end
-			 			else
-			 				bandera[1]=false
-			 			end
-			 		else
+							end
+						else
+							bandera[1]=false
+						end
+					else
 						if (cadena1==cad) && !(cad.eql?"false")
-
-							# if cadena1.casecmp?(@palabraReservada[i]) && !bandera[2]
-							#  	cadena1=cadena1.downcase
-							# 	puts "hola"
-							#   	bandera[2]=true
-							#  end
 							cont=0	
 							@palabraReservada[i].each_char { |c| cadena1.include?(c) ? cont+=1 :0 }
 							if cont==@palabraReservada[i].length
-								"Error en la linea #{index+1}"
-								"Linea completa con el error #{cad}"
+
+								erroresNoLinea << index+1
+								erroresLinea << cad
 								return true
 							end
 						else
@@ -135,8 +122,8 @@ class DetectorTokens
 						bandera[0]=true
 						while bandera[0]
 							if cadena1.downcase.eql?(@palabraReservada[i])
-								"Error en la linea #{index+1} "
-								"Linea completa con el error #{cad}"
+								erroresNoLinea << index+1
+								erroresLinea << cad
 								bandera[0]=false
 								return true
 							elsif j==@palabraReservada.length
@@ -144,17 +131,56 @@ class DetectorTokens
 							end
 							j+=1
 						end
-			 		end
-			 		i+=1
-			 	end
+					end
+					i+=1
+				end
 				k+=1
 			end
 			return false
 		end
 	end
 
+	def ContarVar(variable)
+		bandera=false
+		for i in (0..9)
+			if variable[0].eql?(i.to_s)
+				puts variable
+				bandera=true
+			end
+		end
+		if !bandera
+			#Cuenta las variables de tipo int
+			variablesInt.each_with_index do |var,index|
+				var.eql?(variable) ? variablesIntCont[index]+=1 : 0
+			end
+			#Cuenta las variables de tipo float
+			variablesFloat.each_with_index do |var,index|
+				var.eql?(variable) ? variablesFloatCont[index]+=1 : 0
+			end
+			#Cuenta las variables de tipo bool
+			variablesBool.each_with_index do |var,index|
+				var.eql?(variable) ? variablesBoolCont[index]+=1 : 0
+			end
+			#Cuenta las variables de tipo string
+			variablesString.each_with_index do |var,index|
+				var.eql?(variable) ? variablesStringCont[index]+=1 : 0
+			end
+		end
+	end
+
 	def CapturarErrorOp(cad,operador,index)
 		cont=cad.index(operador)
+		cad2=cad[(cont+1),cad.length]
+		cont1=cad.index("(")
+		if cont1.eql?(nil)
+			cad1=cad[0,cont]
+			cad2[0].eql?(nil)? 0: ContarVar(cad1)
+		else 
+			cad1=cad[(cont1+1),cad.length]
+			cont1=cad1.index(operador)
+			cad1=cad1[0,cont1]
+			cad2[0].eql?(nil)? 0: ContarVar(cad1)
+		end
 		cad=cad[(cont+1),cad.length]
 		entero=cad.to_i
 		if cad[0]=="=" || entero>0 || cad[0]=="0" || entero<0
@@ -184,7 +210,15 @@ class DetectorTokens
 			cadena2=""
 			cad.each_char do |c|
 				cadena2+=c
-				cadena2.eql?(@palabraReservada[i]) ? @palabraReservadacont[i]+=1 : 0
+				if cadena2.eql?(@palabraReservada[i])
+					if cadena2.eql?("while")
+						cont=cad.index("(")
+						cad1=cad[(cont+1),cad.length]
+						cad1[0].eql?("\!") ? cad1=cad1[1,cad1.length] : 0
+						ContarVar(cad1)
+					end
+					@palabraReservadacont[i]+=1
+				end
 			end
 			i+=1
 		end
@@ -276,12 +310,12 @@ class DetectorTokens
 			end
 		end
 	end
+
 	def ContarVariables(array,index,pr) 
 		#Recibe 3 parametros un vector, el indice de la linea en caso de errores, la palabra reservada ejmp int,float, etc
 		#Comparar cada posición del array
 		array.each do |var|
 			#verifica las variables
-			#puts "pr: #{pr}"
 			if !var.include?(pr) and !var.include?")"
 				if var.count("=")==1
 					CapturarErrorOp(var,"=",index)? @operadorescont[5]+=1 : 0
@@ -306,10 +340,7 @@ class DetectorTokens
  				valor = var.split(")")
 				BuscarVector(pr,valor[0])
 			end
-			if var.end_with?';'								#si la cadena termina con ";" los tomara todos
-				@signoscont[5]+=1
-				end
-			end
+		end
 	end
 
 	def EjecutarDetector
@@ -318,54 +349,67 @@ class DetectorTokens
 			cont=0
 			array[0].eql?(nil) ? 0 : array[0]=array[0].strip
 			if array[0].eql?("int")
-				#Comparación: el método main no lo tomará en cuenta, para eso sirve el unless
-				unless array.include?"main"
-					@palabraReservadacont[0]+=1
-					ContarVariables(array,index,"int")
-				else
-					@palabraReservadacont[0]+=1
-				end
+			# 	#Comparación: el método main no lo tomará en cuenta, para eso sirve el unless
+			 	unless array.include?"main"
+			 		@palabraReservadacont[0]+=1
+			 		ContarVariables(array,index,"int")
+			 	else
+			 		@palabraReservadacont[0]+=1
+			 	end
 			elsif array[0].eql?("float")
-				@palabraReservadacont[1]+=1
-				ContarVariables(array,index,"float")
+			 	@palabraReservadacont[1]+=1
+			 	ContarVariables(array,index,"float")
 			elsif array[0].eql?"bool"
-				@palabraReservadacont[2]+=1
-				ContarVariables(array,index,"bool")
+			 	@palabraReservadacont[2]+=1
+			 	ContarVariables(array,index,"bool")
 			elsif array[0].eql?"string"
-				@palabraReservadacont[3]+=1
-				ContarVariables(array,index,"string")
+			 	@palabraReservadacont[3]+=1
+			 	ContarVariables(array,index,"string")
+			elsif array[0].eql?"return"
+			 	cadena=array[1].delete(";")
+			 	ContarVar(cadena)
+			elsif array[0].eql?"if"
+			 	@palabraReservadacont[4]+=1
 			elsif array.length!=1 && array.length!=0	##si el array su tamaño es diferente de 1 y de 0 hace lo siguiente
-				#puts array[cont]
-				array.each do |cad| #each para iterar el array
-					cad=cad.strip     #le quito los tabuladores con ese metodo
-					if ((cad.include?"=") && (cad.include?("\!")))
-						if cad.count("=")==1 && cad.count("\!")==1
-							CapturarErrorOp(cad,"\!",index) ? @operadorescont[12]+=1 : 0
-						end
-					elsif ((cad.include?"=") && (cad.include?("<")))
-						if cad.count("=")==1 && cad.count("<")==1
-							CapturarErrorOp(cad,"<",index) ? @operadorescont[10]+=1 : 0
-						end
-					elsif ((cad.include?"=") && (cad.include?(">")))
-						if cad.count("=")==1 && cad.count(">")==1
-							if CapturarErrorOp(cad,">",index)
-								@operadorescont[9]+=1
-							end
+			 	array.each do |cad| #each para iterar el array
+			 		cad=cad.strip     #le quito los tabuladores con ese metodo
+			 		if ((cad.include?"=") && (cad.include?("\!")))
+			 			if cad.count("=")==1 && cad.count("\!")==1
+			 				CapturarErrorOp(cad,"\!",index) ? @operadorescont[12]+=1 : 0
+			 			end
+			 		elsif ((cad.include?"=") && (cad.include?("<")))
+			 			if cad.count("=")==1 && cad.count("<")==1
+			 				CapturarErrorOp(cad,"<",index) ? @operadorescont[10]+=1 : 0
+			 			else
+			 			end
+			 		elsif ((cad.include?"=") && (cad.include?(">")))
+				 		if cad.count("=")==1 && cad.count(">")==1
+				 			if CapturarErrorOp(cad,">",index)
+			 					@operadorescont[9]+=1
+			 				else
+			 				end
+						else
+							bandera=false
 						end
 					elsif cad.count("==")==2
 						if CapturarErrorOp(cad,"=",index)
 							@operadorescont[6]+=1
+						else
+							bandera=false
 						end
 					elsif cad.count("=")==1
 						if CapturarErrorOp(cad,"=",index)
 							@operadorescont[4]+=cad.count("%")
 							@operadorescont[5]+=1
+						else
+							bandera=false
 						end
 					elsif cad.count(">")==1
 						CapturarErrorOp(cad,">",index) ? @operadorescont[8]+=1 : 0
-					elsif cad.count("<")==1
-						CapturarErrorOp(cad,"<",index) ? @operadorescont[7]+=1 : 0
-					end
+			 		elsif cad.count("<")==1
+			 			CapturarErrorOp(cad,"<",index) ? @operadorescont[7]+=1 : 0
+			 		end
+
 					@signoscont[0]+=cad.count("(")					#estos métodos todos cuentan cuantos hay en cada linea
 					@signoscont[1]+=cad.count(")")
 					@signoscont[4]+=cad.count("\"")
@@ -379,20 +423,17 @@ class DetectorTokens
 					elsif cad[0]=="}" && cad.length>1
 						cad=cad[1,cad.length]
 					end
-					#Cuenta la cantidad de variables int que hayan dentro del programa	
 					if cad.eql?"else"
 						@palabraReservadacont[5]+=1
 					else
-						contarTokens(cad)
-					 	CapturarErroresPR(cad,index)
+						CapturarErroresPR(cad,index) ? 0 : contarTokens(cad)
 					end
 					cad.eql?("do") ? @palabraReservadacont[7]+=1 : 0
 					@operadorescont[0]+=cad.count("+")
 					@operadorescont[1]+=cad.count("-")
 					@operadorescont[2]+=cad.count("*")
 					@operadorescont[3]+=cad.count("/")
-					cad.end_with?(';') ? @signoscont[5]+=1 : 0
-				end
+			 	end
 			elsif array.length==1 && array.length!=0					#de lo contrario si la cadena es 1 sola linea hago lo siguiente
 				cad=array[0].strip 				#le vuelvo a quitar los tabuladores en este caso jalo del array =0 porque como es solo 1 vector
 				bandera=true
@@ -469,7 +510,6 @@ class DetectorTokens
 					@operadorescont[1]+=cad.count("-")
 					@operadorescont[2]+=cad.count("*")
 					@operadorescont[3]+=cad.count("/")
-					cad.end_with?(';') ? @signoscont[5]+=1 : 0
 				end
 			end
 		end
@@ -512,58 +552,6 @@ pero para esto necesitamos que la pimera bandera este en true
 #termina la condicion
 #termina el metodo
 =end
-
-# dTokens=DetectorTokens.new#instancio la clase
-# dTokens.rutaArchivo("prueba.txt")
-#  dTokens.imprimir
-#  dTokens.imprimirArreglo
-# dTokens.EjecutarDetector
-# # #muestro la cantidad de signos que se encontraron
-# for i in (0..dTokens.palabraReservadacont.length-1)
-# 	puts "#{i} Se encontraron #{dTokens.palabraReservadacont[i]} veces la palabra reservada #{dTokens.palabraReservada[i]}"
-# end
-# puts "---------------------------------------------------------"
-# for i in (0..dTokens.signoscont.length-1)
-# 	puts "Se encontraron #{dTokens.signoscont[i]} veces el signo #{dTokens.signos[i]}"
-# end
-# puts "---------------------------------------------------------"
-# for i in (0..dTokens.operadorescont.length-1)
-# 	puts "Se encontraron #{dTokens.operadorescont[i]} veces el operador #{dTokens.operadores[i]}"
-# end
-# puts "---------------------------------------------------------"
-# puts "Variables tipo int"
-# x=0
-# for i in(0..dTokens.variablesInt.length-1)
-# 	puts "#{dTokens.variablesInt[i]} aparece #{dTokens.variablesIntCont[i]}"
-# 	x+=dTokens.variablesIntCont[i]
-# end
-# puts "Cantidad de variables tipo int: #{x}"
-# puts "---------------------------------------------------------"
-# puts "Variables tipo float"
-# x=0
-# for i in(0..dTokens.variablesFloat.length-1)
-# 	puts "#{dTokens.variablesFloat[i]} aparece #{dTokens.variablesFloatCont[i]}"
-# 	x+=dTokens.variablesFloatCont[i]
-# end
-# puts "Cantidad de variables tipo float: #{x}"
-# puts "---------------------------------------------------------"
-# puts "Variables tipo bool"
-# x=0
-# for i in(0..dTokens.variablesBool.length-1)
-# 	puts "#{dTokens.variablesBool[i]} aparece #{dTokens.variablesBoolCont[i]}"
-# 	x+=dTokens.variablesBoolCont[i]
-# end
-# puts "Cantidad de variables tipo bool: #{x}"
-# puts "---------------------------------------------------------"
-# puts "Variables tipo String"
-# x=0
-# for i in(0..dTokens.variablesString.length-1)
-# 	puts "#{dTokens.variablesString[i]} aparece #{dTokens.variablesStringCont[i]}"
-# 	x+=dTokens.variablesStringCont[i]
-# end
-# puts "Cantidad de variables tipo String: #{x}"
-# puts "---------------------------------------------------------"
-
 class Ventana
 	attr_accessor :detector
 	attr_accessor :filename
@@ -640,7 +628,7 @@ class Ventana
 								string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
 							end
 							#
-							alert string, :title => "Palabras Reservadas"
+							@detector.erroresLinea.length.zero? ? (alert string, :title => "Palabras Reservadas") : (alert "Error en la linea #{@detector.erroresLinea[0]}")
 							#grafica1
 						else
 							alert("Seleccione un archivo")
