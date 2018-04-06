@@ -718,85 +718,110 @@ class Ventana
 			@captionPath.size = 12
 			@captionPath.width = 400
 			@texto= edit_box :top=>70, :left =>750, :height=>400, :width=>500
-	def establecerGrafica(valorGrafica)
-		string=""
-		if(valorGrafica == 1)
-			for i in (0..@detector.palabraReservada.length-1)
-				@values1[i]=@detector.palabraReservadacont[i]
-				@x_axis1[i]=@detector.palabraReservada[i]
-				string+="Se encontro #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+				def establecerGrafica(valorGrafica)
+				string=""
+				if(valorGrafica == 1)
+					for i in (0..@detector.palabraReservada.length-1)
+						@values1[i]=@detector.palabraReservadacont[i]
+						@x_axis1[i]=@detector.palabraReservada[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					if(@values1.length > 1)
+						grafica1(@values1, @x_axis1)
+					else
+						valorGrafica(@values1, @x_axis1)
+					end
+				elsif valorGrafica == 2
+					for i in (0..@detector.signos.length-1)
+						@values1[i]=@detector.signoscont[i]
+						@x_axis1[i]=@detector.signos[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					if(@values1.length > 1)
+						grafica1(@values1, @x_axis1)
+					else
+						valorGrafica(@values1, @x_axis1)
+					end
+				elsif valorGrafica == 3
+					for i in (0..@detector.operadores.length-1)
+						@values1[i]=@detector.operadorescont[i]
+						@x_axis1[i]=@detector.operadores[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					if(@values1.length > 1)
+						grafica1(@values1, @x_axis1)
+					else
+						valorGrafica(@values1, @x_axis1)
+					end
+				elsif valorGrafica == 4
+					for i in (0..@detector.variablesInt.length-1)
+						@values1[i]=@detector.variablesIntCont[i]
+						@x_axis1[i]=@detector.variablesInt[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					if(@values1.length > 1)
+						grafica1(@values1, @x_axis1)
+					else
+						valorGrafica(@values1, @x_axis1)
+					end
+				elsif valorGrafica == 5
+					for i in (0..@detector.variablesFloat.length-1)
+						@values1[i]=@detector.variablesFloatCont[i]
+						@x_axis1[i]=@detector.variablesFloat[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					if(@values1.length > 1)
+						grafica1(@values1, @x_axis1)
+					else
+						valorGrafica(@values1, @x_axis1)
+					end
+				elsif valorGrafica == 6
+					for i in (0..@detector.variablesBool.length-1)
+						@values1[i]=@detector.variablesBoolCont[i]
+						@x_axis1[i]=@detector.variablesBool[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					if(@values1.length > 1)
+						grafica1(@values1, @x_axis1)
+					else
+						grafica2(@values1, @x_axis1)
+					end
+				elsif valorGrafica == 7
+					for i in (0..@detector.variablesString.length-1)
+						@values1[i]=@detector.variablesStringCont[i]
+						@x_axis1[i]=@detector.variablesString[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					if(@values1.length > 1)
+						grafica1(@values1, @x_axis1)
+					else
+						valorGrafica(@values1, @x_axis1)
+					end
+				end
+				@values1 = Array.new
+				@x_axis1 = Array.new
 			end
-			alert string, :title => "Palabras Reservadas"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 2
-			for i in (0..@detector.signos.length-1)
-				@values1[i]=@detector.signoscont[i]
-				@x_axis1[i]=@detector.signos[i]
-				string+="Se encontro #{@values1[i]} veces el signo #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Signos"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 3
-			for i in (0..@detector.operadores.length-1)
-				@values1[i]=@detector.operadorescont[i]
-				@x_axis1[i]=@detector.operadores[i]
-				string+="Se encontro #{@values1[i]} veces el operador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Operadores"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 4
-			for i in (0..@detector.variablesInt.length-1)
-				@values1[i]=@detector.variablesIntCont[i]
-				@x_axis1[i]=@detector.variablesInt[i]
-				string+="Se encontro #{@values1[i]} veces el identificador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Identificador INT"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 5
-			for i in (0..@detector.variablesFloat.length-1)
-				@values1[i]=@detector.variablesFloatCont[i]
-				@x_axis1[i]=@detector.variablesFloat[i]
-				string+="Se encontro #{@values1[i]} veces el identificador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Identificador FLOAT"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 6
-			for i in (0..@detector.variablesBool.length-1)
-				@values1[i]=@detector.variablesBoolCont[i]
-				@x_axis1[i]=@detector.variablesBool[i]
-				string+="Se encontro #{@values1[i]} veces el identificador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Identificador BOOL"
-			grafica1(@values1, @x_axis1)
-		elsif valorGrafica == 7
-			for i in (0..@detector.variablesString.length-1)
-				@values1[i]=@detector.variablesStringCont[i]
-				@x_axis1[i]=@detector.variablesString[i]
-				string+="Se encontro #{@values1[i]} veces el identificador #{@x_axis1[i]} \n"
-			end
-			alert string, :title => "Identificador STRING"
-			grafica1(@values1, @x_axis1)
-		end
-		@values1 = Array.new
-		@x_axis1 = Array.new
-	end
-	
-	def grafica1(valores, eje)
-		Shoes.app width: 500, height: 500 do
-			widget_width = 500
-			widget_height = 500
-			@valorMax = 0
-			if(valores.length > 1 and eje.length > 1)
-				@arrayNuevo = valores.sort.reverse
-				@valorMax = @arrayNuevo[0]+1;
-			else
-				@valorMax = valores[0]
-			end
-				@grf = plot widget_width, widget_height, title: "Gráfica", caption:
-			"Amazing!!", font: "Mono", auto_grid: true,
-			default: "skip", background: cornsilk, chart: "column", boundary_box: true
-			
-				@grf.add values: valores, labels: eje,
+
+			def grafica1(valores, eje)
+				Shoes.app width: 500, height: 500 do
+					widget_width = 500
+					widget_height = 500
+					@valorMax = 0
+					@arrayNuevo = valores.sort.reverse
+					@valorMax = @arrayNuevo[0]+1;
+
+					@grf = plot widget_width, widget_height, title: "Gráfica", caption:
+					"Amazing!!", font: "Mono", auto_grid: true,
+					default: "skip", background: cornsilk, chart: "column", boundary_box: true
+					
+					@grf.add values: valores, labels: eje,
 						name: "", min: 0, max: @valorMax, color: rgb(220, 20, 60, 172),
 						points: true, strokewidth: 25
 				end
@@ -806,21 +831,14 @@ class Ventana
 			def grafica2(valores, eje)
 				Shoes.app width: 500, height: 500 do
 					widget_width = 500
-					widget_height = 500
-					@valorMax = 0
-					if(valores.length > 1 and eje.length > 1)
-						@arrayNuevo = valores.sort.reverse
-						@valorMax = @arrayNuevo[0]+1;
-					else
-						@valorMax = valores[0]
-					end
+					widget_height = 500					
 
 					@grf = plot widget_width, widget_height, title: "Gráfica", caption:
 					"Amazing!!", font: "Mono", auto_grid: true,
 					default: "skip", background: cornsilk, chart: "pie", boundary_box: true
 					
 					@grf.add values: valores, labels: eje,
-						name: "", min: 0, max: @valorMax, color: rgb(220, 20, 60, 172),
+						name: "", min: 0, max: valores[0]+1, color: rgb(220, 20, 60, 172),
 						points: true, strokewidth: 25
 				end
 			end
