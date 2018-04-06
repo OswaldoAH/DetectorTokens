@@ -663,6 +663,8 @@ class Ventana
 				@filename = @filename.gsub("\\", "/")
 				@captionPath.text = @filename
 				@detector.rutaArchivo(@filename)
+				archivo=File.read(@filename)
+				@texto.append(archivo) #agrego el contenido del archivo
 			end
 			#ComboBox
 			@list = list_box :top=>70, :left =>500, :items => ["Palabras Reservadas", "Signos", "Operadores",
