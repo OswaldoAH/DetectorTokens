@@ -602,8 +602,8 @@ class Ventana
 						@detector.rutaArchivo(@filename)
 					end
 
-					#ComboBox
-					list_box :top=>70, :left =>500, :items => ["Palabras Reservadas", "Signos", "Operadores",
+										#ComboBox
+					@list = list_box :top=>70, :left =>500, :items => ["Palabras Reservadas", "Signos", "Operadores",
 						"Variables Int", "Variables Float", "Variables bool", "Variables String"]
 						# :choose => "Palabras Reservadas" do |list|
 						# 	list_box = list.text
@@ -611,7 +611,27 @@ class Ventana
 
 					#Botón mostrar gráfica
 					button "Mostrar Gráfica", :top=>130, :left =>515 do
-						grafica1(@values1, @x_axis1)
+						unless @captionPath.text.length.to_i.zero?
+							if @list.text.length.zero?
+								alert "Seleccione un valor en el Combo Box"
+							elsif @list.text == "Palabras Reservadas"
+								grafica1(@values1, @x_axis1)
+							elsif @list.text == "Signos"
+								alert "signos"
+							elsif @list.text == "Operadores"
+								alert "Operadores"
+							elsif @list.text == "Variables Int"
+								alert "Int"
+							elsif @list.text == "Variables Float"
+								alert "float"
+							elsif @list.text == "Variables bool"
+								alert "Bool"
+							elsif @list.text == "Variables String"
+								alert "String"
+							end
+						else
+							alert "Seleccione un archivo"
+						end
 					end
 
 					#Imagen para ejecutar el detector de tokens
