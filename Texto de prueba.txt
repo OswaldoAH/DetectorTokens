@@ -14,7 +14,7 @@ int main ()
 	int var=3;
 	while(op==5){
 		bandera=true;
-		while(bandera && a=>0)
+		while(bandera && a>=0)
 		{
 			bandera=false;
 			cout<<"Hola";

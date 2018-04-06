@@ -616,12 +616,12 @@ pero para esto necesitamos que la pimera bandera este en true
 #termina la condicion
 #termina el metodo
 =end
-dtokens=DetectorTokens.new
-dtokens.rutaArchivo("Texto de prueba.txt")
-dtokens.EjecutarDetector
-for i in (0..dtokens.erroresLinea.length-1)
-	puts "Error en la linea #{dtokens.erroresNoLinea[i]}\nLinea #{dtokens.erroresLinea[i]}"
-end
+# dtokens=DetectorTokens.new
+# dtokens.rutaArchivo("Texto de prueba.txt")
+# dtokens.EjecutarDetector
+# for i in (0..dtokens.erroresLinea.length-1)
+# 	puts "Error en la linea #{dtokens.erroresNoLinea[i]}\nLinea #{dtokens.erroresLinea[i]}"
+# end
 class Ventana
 	attr_accessor :detector
 	attr_accessor :filename
@@ -631,8 +631,8 @@ class Ventana
 
 	def disenio
 		Shoes.app :title=>"Detector de Tokens",
-			:width=>750, 
-			:height=>500,
+			:width=>1300, 
+			:height=>520,
 		 	:margin=>10,
 		 	:resizable => false do
 		 	@detector = DetectorTokens.new
@@ -712,7 +712,6 @@ class Ventana
 						unless @var.to_i.zero?
 							@detector.EjecutarDetector
 							if @detector.erroresLinea.length.zero?
-
 								alert "Tokens detectados correctamente"
 							else
 								alert "Error en la linea #{@detector.erroresLinea[0]}"
@@ -784,6 +783,8 @@ class Ventana
 						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
 					end
 					alert string, :title => "Palabras Reservadas"
+					#alert "values: #{@values1[0]}"
+					alert @x_axis1[0]
 					grafica1(@values1, @x_axis1)
 				elsif valorGrafica == 7
 					for i in (0..@detector.variablesString.length-1)
@@ -802,14 +803,20 @@ class Ventana
 				Shoes.app width: 500, height: 500 do
 					widget_width = 500
 					widget_height = 500
-					@arrayNuevo = valores.sort.reverse
+					@valorMax = 0
+					if(valores.length > 1 and eje.length > 1)
+						@arrayNuevo = valores.sort.reverse
+						@valorMax = @arrayNuevo[0]+1;
+					else
+						@valorMax = valores[0]
+					end
 
 					@grf = plot widget_width, widget_height, title: "Gráfica", caption:
 					"Amazing!!", font: "Mono", auto_grid: true,
 					default: "skip", background: cornsilk, chart: "column", boundary_box: true
 					
 					@grf.add values: valores, labels: eje,
-						name: "", min: 0, max: @arrayNuevo[0]+1, color: rgb(220, 20, 60, 172),
+						name: "", min: 0, max: @valorMax, color: rgb(220, 20, 60, 172),
 						points: true, strokewidth: 25
 				end
 			end
@@ -817,5 +824,5 @@ class Ventana
 	end
 end
 
-# vent = Ventana.new
-# vent.disenio
+vent = Ventana.new
+vent.disenio
