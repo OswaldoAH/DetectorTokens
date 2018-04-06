@@ -1,6 +1,3 @@
-#include <iostream>
-#include <conio.h>
-
 using namespace std;
 
 int valor(int a);
@@ -17,7 +14,7 @@ int main ()
 	int var=3;
 	while(op==5){
 		bandera=true;
-		while(bandera && a>=0)
+		while(bandera && a=>0)
 		{
 			bandera=false;
 			cout<<"Hola";
@@ -40,11 +37,11 @@ int valor(int a)
 }
 float valor1(float b)
 {
-	b=10
+	b=10;
 	return b;
 }
 string valor2(string c)
 {
-	c = "Hola"
-	return c
+	c="Hola";
+	return c;
 }
