@@ -718,6 +718,9 @@ class Ventana
 			@captionPath.size = 12
 			@captionPath.width = 400
 			@texto= edit_box :top=>70, :left =>750, :height=>400, :width=>500
+			@textoErrores =edit_box :top=>400, :left=>0, :width=>500, :height=>100
+			@captionErrores = caption(:top=>375, :left=>0)
+			@captionErrores.text ="Errores: "
 	def establecerGrafica(valorGrafica)
 		string=""
 		if(valorGrafica == 1)
