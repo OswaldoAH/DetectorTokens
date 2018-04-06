@@ -191,7 +191,7 @@ class DetectorTokens
 			cad1=cad[0,cont]
 			if !cad2[0].eql?(nil)
 				if ContarVar(cad1)
-					erroresNoLinea<<index
+					erroresNoLinea<<index+1
 					erroresLinea<<cad
 				end
 			end
@@ -201,7 +201,7 @@ class DetectorTokens
 			cad1=cad1[0,cont1]
 			if !cad2[0].eql?(nil) 
 				if ContarVar(cad1)
-					erroresNoLinea<<index
+					erroresNoLinea<<index+1
 					erroresLinea<<cad
 				end
 			end
@@ -218,6 +218,8 @@ class DetectorTokens
 					cad.eql?("true") ? @palabraReservadacont[8]+=1 : @palabraReservadacont[9]+=1
 					return true
 				else
+					erroresNoLinea<<index+1
+					erroresLinea<<cadena
 					return false
 				end
 			end
@@ -228,7 +230,6 @@ class DetectorTokens
 				return !CapturarErroresPR(cad,index)
 			end
 		else
-
 			return false
 		end
 	end
@@ -404,7 +405,7 @@ class DetectorTokens
 			 	end
 			 	if bandera
 				 	if ContarVar(cadena) 
-				 		erroresNoLinea<<index
+				 		erroresNoLinea<<index+1
 						erroresLinea<<cadena
 					end
 			 	end
@@ -418,7 +419,7 @@ class DetectorTokens
 			 				if CapturarErrorOp(cad,"\!",index)
 			 					@operadorescont[12]+=1
 			 				else
-			 					erroresNoLinea<<index
+			 					erroresNoLinea<<index+1
 			 					erroresLinea<<cad
 			 				end
 			 			end
@@ -426,7 +427,7 @@ class DetectorTokens
 			 			if cad.count("=")==1 && cad.count("<")==1
 			 				CapturarErrorOp(cad,"<",index) ? @operadorescont[10]+=1 : 0
 			 			else
-			 				erroresNoLinea<<index
+			 				erroresNoLinea<<index+1
 			 				erroresLinea<<cad
 			 			end
 			 		elsif ((cad.include?"=") && (cad.include?(">")))
@@ -434,18 +435,18 @@ class DetectorTokens
 				 			if CapturarErrorOp(cad,">",index)
 			 					@operadorescont[9]+=1
 			 				else
-			 					erroresNoLinea<<index
+			 					erroresNoLinea<<index+1
 			 					erroresLinea<<cad
 			 				end
 						else
-							erroresNoLinea<<index
+							erroresNoLinea<<index+1
 			 				erroresLinea<<cad
 						end
 					elsif cad.count("==")==2
 						if CapturarErrorOp(cad,"=",index)
 							@operadorescont[6]+=1
 						else
-							erroresNoLinea<<index
+							erroresNoLinea<<index+1
 			 					erroresLinea<<cad
 						end
 					elsif cad.count("=")==1
@@ -453,21 +454,21 @@ class DetectorTokens
 							@operadorescont[4]+=cad.count("%")
 							@operadorescont[5]+=1
 						else
-							erroresNoLinea<<index
+							erroresNoLinea<<index+1
 			 					erroresLinea<<cad
 						end
 					elsif cad.count(">")==1
 						if CapturarErrorOp(cad,">",index)
 							@operadorescont[8]+=1
 						else
-							erroresNoLinea<<index
+							erroresNoLinea<<index+1
 			 				erroresLinea<<cad
 			 			end
 			 		elsif cad.count("<")==1
 			 			if CapturarErrorOp(cad,"<",index)
 			 				@operadorescont[7]+=1
 			 			else
-			 				erroresNoLinea<<index
+			 				erroresNoLinea<<index+1
 		 					erroresLinea<<cad
 		 				end
 			 		end
@@ -505,12 +506,12 @@ class DetectorTokens
 							if CapturarErrorOp(cad,"<",index)
 								@operadorescont[10]+=1
 							else
-								erroresNoLinea<<index
+								erroresNoLinea<<index+1
 			 					erroresLinea<<cad
 								bandera=false
 							end
 						else
-							erroresNoLinea<<index
+							erroresNoLinea<<index+1
 		 					erroresLinea<<cad
 							bandera=false
 						end
@@ -519,12 +520,12 @@ class DetectorTokens
 							if CapturarErrorOp(cad,">",index)
 								@operadorescont[9]+=1
 							else
-								erroresNoLinea<<index
+								erroresNoLinea<<index+1
 			 					erroresLinea<<cad
 								bandera=false
 							end
 						else
-							erroresNoLinea<<index
+							erroresNoLinea<<index+1
 			 				erroresLinea<<cad
 							bandera=false
 						end
@@ -532,7 +533,7 @@ class DetectorTokens
 						if CapturarErrorOp(cad,"=",index)
 							@operadorescont[6]+=1
 						else
-							erroresNoLinea<<index
+							erroresNoLinea<<index+1
 			 				erroresLinea<<cad
 							bandera=false
 						end
@@ -541,7 +542,7 @@ class DetectorTokens
 						if CapturarErrorOp(cad,"=",index)
 							@operadorescont[5]+=1
 						else
-							erroresNoLinea<<index
+							erroresNoLinea<<index+1
 			 				erroresLinea<<cad
 							bandera=false
 						end
@@ -703,7 +704,11 @@ class Ventana
 					if @detector.erroresLinea.length.zero?
 						alert "Tokens detectados correctamente"
 					else
-						alert "Error en la linea #{@detector.erroresLinea[0]}"
+						cadena=""
+						for i in (0..@detector.erroresLinea.length-1)
+							cadena+="Error en la linea #{@detector.erroresNoLinea[i]} palabra con error #{@detector.erroresLinea[i]}\n"
+						end
+						@textoErrores.append(cadena)
 						boton.hide()
 					end
 				else
