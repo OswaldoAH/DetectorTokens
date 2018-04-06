@@ -818,7 +818,7 @@ class Ventana
 			end
 
 			def grafica1(valores, eje)
-				Shoes.app width: 500, height: 500 do
+				Shoes.app width: 500, height: 500, :title=>"Gráfica" do
 					widget_width = 500
 					widget_height = 500
 					@valorMax = 0
@@ -837,7 +837,7 @@ class Ventana
 
 
 			def grafica2(valores, eje)
-				Shoes.app width: 500, height: 500 do
+				Shoes.app width: 500, height: 500, :title=>"Gráfica" do
 					widget_width = 500
 					widget_height = 500					
 

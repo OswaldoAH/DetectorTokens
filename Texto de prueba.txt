@@ -5,7 +5,7 @@ float valor1(float b);
 string valor2(string c);
 int main ()
 {
-	booooooooooool bandera;
+	bool bandera;
 	string s;
 	string letra;
 	int x=0;
@@ -14,7 +14,7 @@ int main ()
 	int var=3;
 	while(op==5){
 		bandera=true;
-		while(bandera && a=>0)
+		while(bandera && a>=0)
 		{
 			bandera=false;
 			cout<<"Hola";
