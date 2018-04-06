@@ -566,8 +566,8 @@ class Ventana
 		 	:margin=>10,
 		 	:resizable => false do
 		 	@detector = DetectorTokens.new
-		 	@values1 = [24, 22, 10, 13, 8, 22]
-		 	@x_axis1 = ['a', 'b', 'c', 'd', 'e', 'f']
+		 	@values1 = Array.new(1)
+		 	@x_axis1 = Array.new(1)
 		  	background "#02E488".."#220909"
 			#Área donde está el texto central
 			stack :width =>"100%" do
@@ -602,7 +602,7 @@ class Ventana
 						@detector.rutaArchivo(@filename)
 					end
 
-										#ComboBox
+					#ComboBox
 					@list = list_box :top=>70, :left =>500, :items => ["Palabras Reservadas", "Signos", "Operadores",
 						"Variables Int", "Variables Float", "Variables bool", "Variables String"]
 						# :choose => "Palabras Reservadas" do |list|
@@ -610,24 +610,24 @@ class Ventana
 						# end
 
 					#Botón mostrar gráfica
-					button "Mostrar Gráfica", :top=>130, :left =>515 do
+					boton = button "Mostrar Gráfica", :top=>130, :left =>515 do
 						unless @captionPath.text.length.to_i.zero?
 							if @list.text.length.zero?
 								alert "Seleccione un valor en el Combo Box"
 							elsif @list.text == "Palabras Reservadas"
-								grafica1(@values1, @x_axis1)
+								establecerGrafica(1)
 							elsif @list.text == "Signos"
-								alert "signos"
+								establecerGrafica(2)
 							elsif @list.text == "Operadores"
-								alert "Operadores"
+								establecerGrafica(3)
 							elsif @list.text == "Variables Int"
-								alert "Int"
+								establecerGrafica(4)
 							elsif @list.text == "Variables Float"
-								alert "float"
+								establecerGrafica(5)
 							elsif @list.text == "Variables bool"
-								alert "Bool"
+								establecerGrafica(6)
 							elsif @list.text == "Variables String"
-								alert "String"
+								establecerGrafica(7)
 							end
 						else
 							alert "Seleccione un archivo"
@@ -641,14 +641,14 @@ class Ventana
 						#Condición para verificar si ya se seleccionó un archivo o no
 						unless @var.to_i.zero?
 							@detector.EjecutarDetector
-							string=""
-							for i in (0..@detector.palabraReservada.length-1)
-								@values1[i]=@detector.palabraReservadacont[i]
-								@x_axis1[i]=@detector.palabraReservada[i]
-								string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+							if @detector.erroresLinea.length.zero?
+
+								alert "Tokens detectados correctamente"
+							else
+								alert "Error en la linea #{@detector.erroresLinea[0]}"
+								boton.hide()
 							end
-							#
-							@detector.erroresLinea.length.zero? ? (alert string, :title => "Palabras Reservadas") : (alert "Error en la linea #{@detector.erroresLinea[0]}")
+
 							#grafica1
 						else
 							alert("Seleccione un archivo")
@@ -665,13 +665,75 @@ class Ventana
 				end
 			end
 
+			def establecerGrafica(valorGrafica)
+				string=""
+				if(valorGrafica == 1)
+					for i in (0..@detector.palabraReservada.length-1)
+						@values1[i]=@detector.palabraReservadacont[i]
+						@x_axis1[i]=@detector.palabraReservada[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					grafica1(@values1, @x_axis1)
+				elsif valorGrafica == 2
+					for i in (0..@detector.signos.length-1)
+						@values1[i]=@detector.signoscont[i]
+						@x_axis1[i]=@detector.signos[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					grafica1(@values1, @x_axis1)
+				elsif valorGrafica == 3
+					for i in (0..@detector.operadores.length-1)
+						@values1[i]=@detector.operadorescont[i]
+						@x_axis1[i]=@detector.operadores[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					grafica1(@values1, @x_axis1)
+				elsif valorGrafica == 4
+					for i in (0..@detector.variablesInt.length-1)
+						@values1[i]=@detector.variablesIntCont[i]
+						@x_axis1[i]=@detector.variablesInt[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					grafica1(@values1, @x_axis1)
+				elsif valorGrafica == 5
+					for i in (0..@detector.variablesFloat.length-1)
+						@values1[i]=@detector.variablesFloatCont[i]
+						@x_axis1[i]=@detector.variablesFloat[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					grafica1(@values1, @x_axis1)
+				elsif valorGrafica == 6
+					for i in (0..@detector.variablesBool.length-1)
+						@values1[i]=@detector.variablesBoolCont[i]
+						@x_axis1[i]=@detector.variablesBool[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					grafica1(@values1, @x_axis1)
+				elsif valorGrafica == 7
+					for i in (0..@detector.variablesString.length-1)
+						@values1[i]=@detector.variablesStringCont[i]
+						@x_axis1[i]=@detector.variablesString[i]
+						string+="Se encontraron #{@values1[i]} veces la palabra reservada #{@x_axis1[i]} \n"
+					end
+					alert string, :title => "Palabras Reservadas"
+					grafica1(@values1, @x_axis1)
+				end
+				@values1 = Array.new
+				@x_axis1 = Array.new
+			end
+
 			def grafica1(valores, eje)
 				Shoes.app width: 500, height: 500 do
 					widget_width = 500
 					widget_height = 500
-					@arrayNuevo = valores
-					@arrayNuevo.sort
-					
+					@arrayNuevo = valores.sort.reverse
+
 					@grf = plot widget_width, widget_height, title: "Gráfica", caption:
 					"Amazing!!", font: "Mono", auto_grid: true,
 					default: "skip", background: cornsilk, chart: "column", boundary_box: true
