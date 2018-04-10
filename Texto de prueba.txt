@@ -1,0 +1,47 @@
+using namespace std;
+
+int valor(int a);
+float valor1(float b);
+string valor2(string c);
+int main ()
+{
+	bool bandera;
+	strin@g s;
+	string letra;
+	int x=0;
+	float a;
+	int op=0, numero=1;
+	int var=3;
+	while(op==5){
+		bandera=true;
+		while(bandera && a>=0)
+		{
+			bandera=false;
+			cout<<"Hola";
+			cin>>a;
+			if(a>5)
+				cout<<"Holi";
+			else if(a<-5)
+		}
+		do{
+			bandera = true;
+		}while(!bandera && a<=0);
+	}
+	return 0;
+}
+
+int valor(int a)
+{
+	a++;
+	return a;
+}
+float valor1(float b)
+{
+	b=10;
+	return b;
+}
+string valor2(string c)
+{
+	c="Hola";
+	return c;
+}
