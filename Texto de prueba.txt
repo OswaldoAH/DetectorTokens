@@ -5,8 +5,8 @@ float valor1(float b);
 string valor2(string c);
 int main ()
 {
-	bool  bandera;
-	string s;
+	bool bandera;
+	strin@g s;
 	string letra;
 	int x=0;
 	float a;

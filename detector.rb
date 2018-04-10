@@ -23,7 +23,7 @@ class DetectorTokens
 	attr_accessor :variablesStringCont
 	attr_accessor :erroresNoLinea
 	attr_accessor :erroresLinea  
-
+	#Constructor de la clase
 	def initialize
 		@palabraReservada=["int","float","bool","string","if","else","while","do","true","false"]
 		@palabraReservadacont=[0,0,0,0,0,0,0,0,0,0]
